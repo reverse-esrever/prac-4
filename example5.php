@@ -1,23 +1,27 @@
 <?php 
+//Создание функции для вычесления площади фигур
 
-class Triangle{
+//Создание интерфейса. Интерфейс - контракт, обязывающий классы, которые этот интерфейс используют, реализовать каждый метод, который прописан в интерфейсе.
+interface Shape{
+    public function getSquare(); //Написано только название метода т.к. реализация метода должна быть написана в классе.
+}
+
+//Ключевое слово implements испульзуется для привязки интерфейсов к классу. Имлементировать можно множество интерфейсов
+//Класс квадрат
+class Square implements Shape{
     public float $a;
-    public float $b;
-    public float $c;
 
-    public function __construct(float $a, float $b, float $c)
+    public function __construct(float $a)
     {
         $this->a = $a;
-        $this->b = $b;
-        $this->c = $c;
     }
 
     public function getSquare(){
-        return $this->a * $this->b * $this->c;
+        return $this->a * $this->a;
     }
 }
-
-class Square{
+//Класс прямоугольник
+class Rectangle implements Shape{
     public float $a;
     public float $b;
 
@@ -31,14 +35,14 @@ class Square{
         return $this->a * $this->b;
     }
 }
-
-function getSquareFromShape($shape){
+//Ф-ция для рассчета площади
+function getSquareFromShape(Shape $shape){
     return $shape->getSquare();
 }
 
-$square = new Square(2,5);
-$triangle = new Triangle(2,5,8);
+$square = new Square(5); // Создание квадрата с сторонами 5
+$rectangle = new Rectangle(2,5); // Создание Прямоугольника  с сторонами 2,5
 
-echo getSquareFromShape($square);
+echo getSquareFromShape($square); // 25
 echo PHP_EOL;
-echo getSquareFromShape($triangle);
+echo getSquareFromShape($rectangle); // 10
