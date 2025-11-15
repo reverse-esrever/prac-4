@@ -1,56 +1,41 @@
 <?php
-
-function shortPath(object $obj, string $start, string $end)
-{
-
-    $costs[$start] = 0;
-    $processed[] = $start;
-    $neihgbors = array_keys($obj->$start);
-
-    foreach ($obj as $name => $node) {
-        if ($name !== $start) {
-            if (in_array($name, $neihgbors)) {
-                $costs[$name] = $obj->$start[$name];
-            } else {
-                $costs[$name] = 9999999999999999;
-            }
+//Класс Банковский аккаунт
+class BankAccount {
+    //protected(защищенное) св-во: запрещает доступ к св-ву объекта из вне. Св-во Можно наследовать и использовать в методах объекта
+    protected $balance;
+    protected $accountNumber;
+    
+    public function __construct($accountNumber, $initialBalance = 0) {
+        $this->accountNumber = $accountNumber;
+        $this->balance = $initialBalance;
+    }
+    //Метод пополнения денег
+    public function deposit($amount) {
+        $this->balance += $amount;
+        echo "Внесено: $amount. Новый баланс: {$this->balance}\n";
+    }
+    //Метод снятие денег
+    public function withdraw($amount) {
+        if ($amount <= $this->balance) {
+            $this->balance -= $amount;
+            echo "Снято: $amount. Новый баланс: {$this->balance}\n";
+        } else {
+            echo "Недостаточно средств!\n";
         }
     }
-
-    while (! empty($neihgbors)) {
-        $currentNode = array_shift($neihgbors);
-        $nextNodes = $obj->$currentNode;
-        foreach($nextNodes as $name => $node){
-            $cost = $costs[$currentNode] + $node;
-            findLowestCost($costs, $name, $cost);
-        }
-        if(!in_array($currentNode, $processed)){
-            $neihgbors = [...$neihgbors, ...array_keys($obj->$currentNode)];
-        }
-        $processed[] = $currentNode;
-    }
-    return $costs;
-}
-
-function findLowestCost(array &$costs, string $name, int $cost) {
-    if($costs[$name] < $cost){
-        return $costs[$name];
-    }else{
-        $costs[$name] = $cost;
-        return $cost;
+    //Метод для получение баланса
+    public function getBalance() {
+        echo "Баланс: {$this->balance}\n";
     }
 }
 
-$obj = new class {
-    public $a = ['b' => 2, 'c' => 1];
-    public $b = ['f' => 7];
-    public $c = ['d' => 5, 'e' => 2];
-    public $d = ['f' => 2];
-    public $e = ['f' => 1];
-    public $f = ['g' => 1];
-    public $g = [];
-};
-
-print_r(shortPath($obj, 'a', 'g'));
-print_r(shortPath($obj, 'b', 'd'));
-print_r(shortPath($obj, 'c', 'g'));
+// Использование
+echo "=== Обычный счет ===\n";
+$account = new BankAccount("123456", 1000);
+$account->deposit(500); // 1500
+$account->withdraw(200); // 1300
+$account->deposit(700); // 2000
+$account->withdraw(2000); // 0
+$account->withdraw(1000); // Недостаточно средств
+$account->getBalance(); // Баланс: 0
+?>
